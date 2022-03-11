@@ -40,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     //SECURE EVERYTHING
     httpSecurity.authorizeRequests().anyRequest().authenticated();
 
-    //DEfAULT LOGIN FORM
+    //DEFAULT LOGIN FORM
     httpSecurity.formLogin();
 
   }
