@@ -1,25 +1,35 @@
 package com.ivoronline.springboot_security_rememberme_db_h2.config;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   //PROPERTIES
-  @Autowired private final UserDetailsService        userDetailsService;
-  @Autowired private final PersistentTokenRepository persistentTokenRepository ;
+  @Autowired UserDetailsService        userDetailsService;
+  @Autowired PersistentTokenRepository persistentTokenRepository;
+
+  //=================================================================
+  // PERSISTENT TOKEN REPOSITORY
+  //=================================================================
+  @Bean
+  public PersistentTokenRepository persistentTokenRepository(DataSource dataSource) {
+    JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+                            tokenRepository.setDataSource(dataSource);
+    return tokenRepository;
+  }
 
   //=================================================================
   // CONFIGURE
@@ -39,10 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     //DISABLE CSRF
     httpSecurity.csrf().disable();
 
-    //SECURE EVERYTHING
-    httpSecurity.authorizeRequests().antMatchers("/Hello").hasRole("USER");
-
-    //httpSecurity.authorizeRequests().anyRequest().authenticated();
+    //SECURE ALL RESOURCES
+    httpSecurity.authorizeRequests().anyRequest().authenticated();
 
     //DEFAULT LOGIN FORM
     httpSecurity.formLogin();
