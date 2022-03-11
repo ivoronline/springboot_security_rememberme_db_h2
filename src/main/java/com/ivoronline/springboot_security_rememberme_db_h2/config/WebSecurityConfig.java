@@ -13,12 +13,16 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+  //PROPERTIES
   @Autowired
   private final UserDetailsService        userDetailsService;
   private final PersistentTokenRepository persistentTokenRepository ;
 
+  //=================================================================
+  // CONFIGURE
+  //=================================================================
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
 
